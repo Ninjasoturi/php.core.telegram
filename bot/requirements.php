@@ -48,6 +48,9 @@ require_once(CORE_BOT_PATH . '/version.php');
 // Geo API
 require_once(CORE_BOT_PATH . '/geo_api.php');
 
+// Chat control
+require_once(CORE_BOT_PATH . '/chat_control.php');
+
 // Tutorial
 if(is_file(ROOT_PATH . '/config/tutorial.php')) {
     require_once(ROOT_PATH . '/config/tutorial.php');
