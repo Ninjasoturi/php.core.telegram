@@ -33,10 +33,14 @@ function chat_log($update) {
                 'method'     => 'restrictChatMember',
                 'chat_id'    => $chat_id,
                 'user_id'    => $user_id,
-                'can_send_messages'       => 0,
+                'can_send_messages'             => 0,
                 'can_send_media_messages'       => 0,
+                'can_send_polls'                => 0,
                 'can_send_other_messages'       => 0,
-                'can_add_web_page_previews'       => 0
+                'can_add_web_page_previews'     => 0,
+                'can_change_info'               => 0,
+                'can_invite_users'              => 0,
+                'can_pin_messages'              => 0
             ];
 
             // Encode data to json.
@@ -57,7 +61,7 @@ function chat_log($update) {
     }
     my_query("INSERT INTO chat_log 
     SET
-        message = '{$message}',
+        message = 'a',
         message_id = '{$message_id}',
         chat_id = '{$chat_id}'
     ");
