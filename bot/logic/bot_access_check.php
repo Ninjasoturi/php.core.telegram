@@ -7,7 +7,7 @@
  * @param $return_access
  * @return bool (if requested)
  */
-function bot_access_check($update, $permission = 'access-bot', $return_result = false, $return_access = false)
+function bot_access_check($update, $permission = 'access-bot', $return_result = false, $return_access = false, $new_user = false)
 {
     global $config;
     // Start with deny access
@@ -15,9 +15,9 @@ function bot_access_check($update, $permission = 'access-bot', $return_result = 
 
     // Get telegram ID to check access from $update - either message, callback_query or inline_query
     $update_type = '';
-    $update_type = !empty($update['message']['from']['id']) ? 'message' : $update_type; 
-    $update_type = (empty($update_type) && !empty($update['callback_query']['from']['id'])) ? 'callback_query' : $update_type; 
-    $update_type = (empty($update_type) && !empty($update['inline_query']['from']['id'])) ? 'inline_query' : $update_type; 
+    $update_type = !empty($update['message']['from']['id']) ? 'message' : $update_type;
+    $update_type = (empty($update_type) && !empty($update['callback_query']['from']['id'])) ? 'callback_query' : $update_type;
+    $update_type = (empty($update_type) && !empty($update['inline_query']['from']['id'])) ? 'inline_query' : $update_type;
     $update_id = $update[$update_type]['from']['id'];
 
     // Write to log.
@@ -70,7 +70,7 @@ function bot_access_check($update, $permission = 'access-bot', $return_result = 
 
     // Get count of access files.
     $access_count = count($access_chats);
-    
+
     // Check each chat
     debug_log('Checking these chats:');
     debug_log($access_chats);
@@ -101,7 +101,7 @@ function bot_access_check($update, $permission = 'access-bot', $return_result = 
                 debug_log('Chat ' . $chat . ' does not exist! Continuing with next chat...');
                 continue;
             }
-        
+
             // Group/channel?
             if($chat[0] == '-') {
                // Get chat member object and check status
@@ -173,7 +173,12 @@ function bot_access_check($update, $permission = 'access-bot', $return_result = 
                         // Debug.
                         debug_log('Access file:');
                         debug_log($access_file);
-                   
+
+                        // If a config file matching users status was found, check if tutorial is forced
+                        if(isset($access_file) && $config->TUTORIAL_MODE && $new_user && in_array("force-tutorial",$access_file)) {
+                            $access_file = NULL;
+                        }
+
                         // Check user status/role and permission to access the function
                         if($chat_obj['result']['user']['id'] == $update_id && isset($access_file) && in_array($permission,$access_file)) {
                             debug_log($afile, 'Positive result on access check in file:');
@@ -195,7 +200,7 @@ function bot_access_check($update, $permission = 'access-bot', $return_result = 
                 }
             // Private chat
             } else {
-                // Get chat object 
+                // Get chat object
                 debug_log("Getting chat object for '$tg_chat'");
                 $chat_obj = get_chat($tg_chat);
 
@@ -285,7 +290,7 @@ function bot_access_check($update, $permission = 'access-bot', $return_result = 
             debug_log('Error! Chat ' . $update_id . ' does not exist!');
         }
     }
-    
+
     // Result of access check?
     // Prepare logging of id, username and/or first_name
     $msg = '';
@@ -304,7 +309,7 @@ function bot_access_check($update, $permission = 'access-bot', $return_result = 
         debug_log('Allowing access to the bot for user:' . CR . $msg);
         // Return access (BOT_ADMINS or access_file)
         if($return_access) {
-            return $access_granted_by; 
+            return $access_granted_by;
         }
     } else if ($allow_access && $return_result) {
         debug_log('Allowing access to the bot for user:' . CR . $msg);
