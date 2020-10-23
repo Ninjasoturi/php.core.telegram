@@ -29,7 +29,7 @@ debug_log($data, '* DATA= ');
 
 // For tutorial mode: Prevent new users from using any bot keys except tutorial
 if($config->TUTORIAL_MODE && isset($update['callback_query']['from']['id']) && new_user($update['callback_query']['from']['id']) && $data['action'] != "tutorial") {
-    answerCallbackQuery($update['callback_query']['id'],  print_r($act,true).getTranslation("tutorial_vote_failed"));
+    answerCallbackQuery($update['callback_query']['id'],  getTranslation("tutorial_vote_failed"));
     $dbh = null;
     exit();
 }

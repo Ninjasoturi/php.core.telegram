@@ -79,6 +79,8 @@ function bot_access_check($update, $permission = 'access-bot', $return_result = 
     // Record why access was granted
     $access_granted_by = false;
 
+    $access_file = $afile = "UNDEFINED";
+
     // Make sure we checked the BOT_ADMINS
     $admins_checked = false;
 
