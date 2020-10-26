@@ -8,7 +8,8 @@
     "RU":"TRANSLATE",
     "NO":"TRANSLATE",
     "FR":"TRANSLATE",
-    "PL":"Alolan"
+    "PL":"Alolan",
+    "FI":"Alolan"
   },
   "pokemon_form_alolan":{
     "NL":"Alolan",
@@ -19,7 +20,8 @@
     "RU":"TRANSLATE",
     "NO":"TRANSLATE",
     "FR":"TRANSLATE",
-    "PL":"Alolan"
+    "PL":"Alolan",
+    "FI":"Alolan"
   },
   "pokemon_form_galarian":{
     "NL":"Galarian",
@@ -30,7 +32,8 @@
     "RU":"Galarian",
     "NO":"Galarian",
     "FR":"Galarian",
-    "PL":"Galarian"
+    "PL":"Galarian",
+    "FI":"Galarian"
   },
   "pokemon_form_mega":{
     "NL":"TRANSLATE",
@@ -462,5 +465,13 @@
     "NO":"TRANSLATE",
     "FR":"TRANSLATE",
     "PL":"Water"
+  },
+  "pokemon_form_costume_2020": {
+    "EN":"Halloween",
+    "FI":"Halloween"
+  },
+  "pokemon_form_fall_2019": {
+    "EN":"Halloween",
+    "FI":"Halloween"
   }
 }
