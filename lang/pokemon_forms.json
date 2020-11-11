@@ -473,5 +473,10 @@
   "pokemon_form_fall_2019": {
     "EN":"Halloween",
     "FI":"Halloween"
+  },
+  "pokemon_form_copy_2019": {
+    "EN":"Clone",
+    "FI":"Klooni"
   }
+
 }
