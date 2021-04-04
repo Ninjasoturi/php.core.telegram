@@ -26,9 +26,9 @@ function my_query($query, $cleanup_query = false)
         }
     } else {
         if ($cleanup_query == true) {
-            debug_log($dbh->errorInfo(), '!', true);
+            info_log($dbh->errorInfo(), '!', true);
         } else {
-            debug_log($dbh->errorInfo(), '!');
+            info_log($dbh->errorInfo(), '!');
         }
     }
 
@@ -36,23 +36,12 @@ function my_query($query, $cleanup_query = false)
 }
 
 /**
- * Write debug log.
+ * Write any log level.
  * @param $val
  * @param string $type
  */
-function debug_log($val, $type = '*', $logfile = null)
+function generic_log($val, $type, $logfile)
 {
-    global $config;
-    // Write to log only if debug is enabled.
-    if ($config->DEBUG === false){
-      return;
-    }
-
-    // If no specific logfile given, default to generic debug logging
-    if ($logfile === null){
-      $logfile = $config->DEBUG_LOGFILE;
-    }
-
     $date = @date('Y-m-d H:i:s');
     $usec = microtime(true);
     $date = $date . '.' . str_pad(substr($usec, 11, 4), 4, '0', STR_PAD_RIGHT);
@@ -60,10 +49,22 @@ function debug_log($val, $type = '*', $logfile = null)
     $bt = debug_backtrace();
     $bl = '';
 
+    // How many calls back to print
+    // Increasing this makes it easier to hunt down issues, but increases log line length
+    $layers = 1;
+
     while ($btl = array_shift($bt)) {
-        if ($btl['function'] == __FUNCTION__) continue;
-        $bl = '[' . basename($btl['file']) . ':' . $btl['line'] . '] ';
+      // Ignore generic_log and it's calling function in the call stack
+      // Not sure why it works exactly like that, but it does.
+      if ($btl['function'] == __FUNCTION__){
+        continue;
+      }
+      --$layers;
+      $bl = $bl . '[' . basename($btl['file']) . ':' . $btl['line'] . ']';
+      if($layers <= 0) {
+        $bl = $bl . ' ';
         break;
+      }
     }
 
     if (gettype($val) != 'string') $val = var_export($val, 1);
@@ -71,6 +72,21 @@ function debug_log($val, $type = '*', $logfile = null)
     foreach ($rows as $v) {
       error_log('[' . $date . '][' . getmypid() . '] ' . $bl . $type . ' ' . $v . "\n", 3, $logfile);
     }
+}
+
+/**
+ * Write debug log.
+ * @param $val
+ * @param string $type
+ */
+function debug_log($message, $type = '*')
+{
+    global $config;
+    // Write to log only if debug is enabled.
+    if ($config->DEBUG === false){
+      return;
+    }
+    generic_log($message, $type, $logfile = $config->DEBUG_LOGFILE);
 }
 
 /**
@@ -84,7 +100,7 @@ function cleanup_log($message, $type = '*'){
   if ($config->CLEANUP_LOG === false){
     return;
   }
-    debug_log($message, $type, $logfile = $config->CLEANUP_LOGFILE);
+    generic_log($message, $type, $logfile = $config->CLEANUP_LOGFILE);
 }
 
 /**
@@ -98,7 +114,7 @@ function debug_log_sql($message, $type = '%'){
   if ($config->DEBUG_SQL === false){
     return;
   }
-  debug_log($message, $type, $config->DEBUG_SQL_LOGFILE);
+  generic_log($message, $type, $config->DEBUG_SQL_LOGFILE);
 }
 
 /**
@@ -112,6 +128,19 @@ function debug_log_incoming($message, $type = '<'){
   if ($config->DEBUG_INCOMING === false){
     return;
   }
-  debug_log($message, $type, $config->DEBUG_INCOMING_LOGFILE);
+  generic_log($message, $type, $config->DEBUG_INCOMING_LOGFILE);
 }
 
+/**
+ * Write INFO level log.
+ * @param $message
+ * @param string $type
+ */
+function info_log($message, $type = '[I]'){
+  global $config;
+  // Write to log only if info logging is enabled.
+  if ($config->LOGGING_INFO === false){
+    return;
+  }
+  generic_log($message, $type, $config->LOGGING_INFO_LOGFILE);
+}
