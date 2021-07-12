@@ -45,10 +45,6 @@ function sendMessage($chat_id, $text = [], $multicurl = false)
       exit();
     }
 
-    if (isset($inline_keyboard)) {
-        $reply_content['reply_markup'] = ['inline_keyboard' => $inline_keyboard];
-    }
-
     // Encode data to json.
     $reply_json = json_encode($reply_content);
 

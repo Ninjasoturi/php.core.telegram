@@ -39,6 +39,10 @@ if (file_exists($id_file) && filesize($id_file) > 0) {
             $skip_ddos_check = 1;
             debug_log('Skipping DDOS check for posting raid directly...','!');
         }
+        if ($action == 'refresh_polls') {
+            $skip_ddos_check = 1;
+            debug_log('Skipping DDOS check for poll refresh...','!');
+        }
     } else if(isset($update['cleanup'])) {
             $skip_ddos_check = 1;
             debug_log('Skipping DDOS check for cleanup...','!');
